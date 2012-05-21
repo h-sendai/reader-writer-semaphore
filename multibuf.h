@@ -15,12 +15,14 @@ extern host_info *host_list;
 extern char *outfile;
 extern int debug;
 extern int so_rcvbuf;
+extern unsigned long long n_loop_reader;
+extern unsigned long long n_loop_writer;
 
 extern void *reader(void *);
 extern void *writer(void *);
 
 /* #define NBUFF 4096 */
-#define NBUFF 4
+#define NBUFF 256
 #define BUFFSIZE 32*1024
 
 typedef struct {

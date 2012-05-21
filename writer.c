@@ -1,5 +1,7 @@
 #include "multibuf.h"
 
+unsigned long long n_loop_writer = 0;
+
 void * writer(void *arg)
 {
     int i;
@@ -16,7 +18,9 @@ void * writer(void *arg)
     }
 
     for (i = 0; ;) {
-        if (debug > 1) {
+        n_loop_writer ++;
+
+        if (debug > 2) {
             fprintf(stderr, "writer: i: %d\n", i);
         }
         if (sem_wait(&shared.n_stored) != 0) {

@@ -4,12 +4,13 @@
 #include "multibuf.h"
 #include "my_socket.h"
 
+unsigned long long n_loop_reader = 0;
+
 void * reader(void *arg)
 {
     int i, bytes_in_sock;
-    unsigned long long n_loop = 0;
     host_info *p;
-    struct timeval start_time, end_time, time_diff;
+    struct timeval tv, start_time, end_time, time_diff;
     char timestamp[1024];
     socklen_t len = sizeof(so_rcvbuf);
 
@@ -45,12 +46,19 @@ void * reader(void *arg)
     /* XXX: one host for now */
     p = host_list;
     for (i = 0; ; ) {
-        n_loop ++;
+        n_loop_reader ++;
+
         if (debug > 1) {
-            fprintf(stderr, "reader: i: %d\n", i);
+            if ((n_loop_reader - n_loop_writer) > 1) {
+                if (gettimeofday(&tv, NULL) < 0) {
+                    err(1, "gettimeofday in debug");
+                }
+                fprintf(stderr, "%ld.%06ld ", tv.tv_sec, tv.tv_usec);
+                fprintf(stderr, "reader - writer: %llu\n", n_loop_reader - n_loop_writer);
+            }
         }
         if (debug > 2) {
-            if (n_loop % 100 == 0) {
+            if (n_loop_reader % 100 == 0) {
                 if (ioctl(p->sockfd, FIONREAD, &bytes_in_sock) < 0) {
                     err(1, "ioctl FIONREAD");
                 }
@@ -64,7 +72,7 @@ void * reader(void *arg)
         if (sem_trywait(&shared.n_empty) != 0) {
             if (errno == EAGAIN) {
                 fprintf(stderr, "cannot get empty buffer. exit.\n");
-                fprintf(stderr, "read %d bytes %llu counts\n", BUFFSIZE, n_loop);
+                fprintf(stderr, "read %d bytes %llu counts\n", BUFFSIZE, n_loop_reader);
                 if (gettimeofday(&end_time, NULL) < 0) {
                     err(1, "gettimeofday on reader");
                 }
