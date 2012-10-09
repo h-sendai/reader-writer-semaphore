@@ -26,7 +26,7 @@ void * writer(void *arg)
         if (sem_wait(&shared.n_stored) != 0) {
             err(1, "sem_wait on writer for shared.nstored");
         }
-        if (shared.buff[i].n == 0) {
+        if (shared.buff[i].n == 0) { /* n == 0 means EOF */
             return NULL;
         }
         if (fwrite(shared.buff[i].data, 1, shared.buff[i].n, fp) != shared.buff[i].n) {
