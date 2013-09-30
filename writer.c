@@ -20,7 +20,7 @@ void * writer(void *arg)
     for (i = 0; ;) {
         n_loop_writer ++;
 
-        if (debug > 2) {
+        if (debug > 3) {
             fprintf(stderr, "writer: i: %d\n", i);
         }
         if (sem_wait(&shared.n_stored) != 0) {
