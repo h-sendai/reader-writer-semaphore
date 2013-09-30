@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 {
     int i, ch;
     pthread_t tid_reader, tid_writer;
+    struct timeval start;
     host_info *p;
     
     while ( (ch = getopt(argc, argv, "do:r:")) != -1) {
@@ -48,11 +49,16 @@ int main(int argc, char *argv[])
     }
     if (debug) {
         for (p = host_list; p != NULL; p = p->next) {
-            fprintf(stderr,"%s\n", p->ip_address);
+            fprintf(stderr,"# %s\n", p->ip_address);
         }
-        fprintf(stderr, "number of buffers: %d\n", NBUFF);
-        fprintf(stderr, "buffer size: %d\n", BUFFSIZE);
+        fprintf(stderr, "# number of buffers: %d\n", NBUFF);
+        fprintf(stderr, "# buffer size: %d\n", BUFFSIZE);
     }
+
+    if (gettimeofday(&start, NULL) < 0) {
+        err(1, "gettimeofday for start");
+    }
+    fprintf(stderr, "%ld.%06ld start\n", start.tv_sec, start.tv_usec);
     
     if (sem_init(&shared.n_empty,  0, NBUFF) != 0) {
         err(1, "sem_init for shared.n_empty");

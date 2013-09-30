@@ -1,6 +1,8 @@
 #ifndef _MULTIBUF_H
 #define _MULTIBUF_H
 
+#include <sys/time.h>
+
 #include <err.h>
 #include <pthread.h>
 #include <stdio.h>

@@ -31,7 +31,7 @@ void * reader(void *arg)
             if (getsockopt(p->sockfd, SOL_SOCKET, SO_RCVBUF, &so_rcvbuf, &len) < 0) {
                 err(1, "getsockopt SO_RCVBUF");
             }
-            fprintf(stderr, "SO_RCVBUF: %d\n", so_rcvbuf);
+            fprintf(stderr, "# SO_RCVBUF: %d\n", so_rcvbuf);
         }
     }
     for (p = host_list; p != NULL; p = p->next) {
