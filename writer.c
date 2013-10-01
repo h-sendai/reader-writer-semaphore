@@ -18,7 +18,6 @@ void * writer(void *arg)
     }
 
     for (i = 0; ;) {
-        n_loop_writer ++;
 
         if (debug > 3) {
             fprintf(stderr, "writer: i: %d\n", i);
@@ -33,10 +32,12 @@ void * writer(void *arg)
             ferror(fp);
             exit(1);
         }
+        n_loop_writer ++;
         
         if (++i >= NBUFF) {
             i = 0;
         }
+
 
         if (sem_post(&shared.n_empty) != 0) {
             err(1, "sem_post on writer for shared.n_empty");

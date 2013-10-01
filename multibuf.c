@@ -5,10 +5,17 @@ host_info *host_list = NULL;
 int debug = 0;
 shared_struct shared;
 int so_rcvbuf = 0;
+int n_servers = 0;
 
 int usage(void)
 {
-    fprintf(stderr, "Usage: mutibuf ip_address:port\n");
+    char *message = 
+"Usage: mutibuf [-d] [-o outfile] [-r so_rcvbuf] ip_address:port [ip_address:port ...]\n"
+"Options:\n"
+"    -d debug (many times)\n"
+"    -o outfile\n"
+"    -r so_rcvbuf\n";
+    fprintf(stderr, "%s\n",message);
     return 0;
 }
 
@@ -46,8 +53,10 @@ int main(int argc, char *argv[])
 
     for (i = 0; i < argc; i++) {
         host_list = addend(host_list, new_host(argv[i]));
+        n_servers ++;
     }
     if (debug) {
+        fprintf(stderr, "# n_servers: %d\n", n_servers);
         for (p = host_list; p != NULL; p = p->next) {
             fprintf(stderr,"# %s\n", p->ip_address);
         }

@@ -19,6 +19,7 @@ extern int debug;
 extern int so_rcvbuf;
 extern unsigned long long n_loop_reader;
 extern unsigned long long n_loop_writer;
+extern int n_servers;
 
 extern void *reader(void *);
 extern void *writer(void *);
