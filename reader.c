@@ -73,6 +73,13 @@ void * reader(void *arg)
     /* XXX: one host for now */
     p = host_list;
     for (i = 0; ; ) {
+        if (has_interrupt) {
+            shared.buff[i].n = 0;
+            if (sem_post(&shared.n_stored) != 0) {
+                err(1, "sem_post on reader for shared.n_stored (EOF)\n");
+            }
+            return NULL; /* terminate reader thread */
+        }
 
         nfds = epoll_wait(epfd, ev_ret, n_servers, timeout * 1000);
         if (nfds < 0) {

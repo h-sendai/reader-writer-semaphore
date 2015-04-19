@@ -12,6 +12,7 @@
 #include "get_num.h"
 #include "host_info.h"
 #include "readn.h"
+#include "my_signal.h"
 
 extern host_info *host_list;
 extern char *outfile;
@@ -37,4 +38,6 @@ typedef struct {
 } shared_struct;
 
 extern shared_struct shared;
+volatile sig_atomic_t has_interrupt;
+
 #endif

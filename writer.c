@@ -26,6 +26,9 @@ void * writer(void *arg)
             err(1, "sem_wait on writer for shared.nstored");
         }
         if (shared.buff[i].n == 0) { /* n == 0 means EOF */
+            if (debug > 1) {
+                fprintf(stderr, "writer thread: shared.buff[%d].n == 0\n", i);
+            }
             return NULL;
         }
         if (fwrite(shared.buff[i].data, 1, shared.buff[i].n, fp) != shared.buff[i].n) {

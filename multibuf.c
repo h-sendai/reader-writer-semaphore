@@ -19,12 +19,21 @@ int usage(void)
     return 0;
 }
 
+void sig_int(int signo)
+{
+    has_interrupt = 1;
+    return;
+}
+
 int main(int argc, char *argv[])
 {
     int i, ch;
     pthread_t tid_reader, tid_writer;
     struct timeval start;
     host_info *p;
+    
+    has_interrupt = 0;
+    my_signal(SIGINT, sig_int);
     
     while ( (ch = getopt(argc, argv, "do:r:")) != -1) {
         switch (ch) {
