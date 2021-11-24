@@ -10,11 +10,9 @@
 #include <semaphore.h>
 
 #include "get_num.h"
-#include "host_info.h"
 #include "readn.h"
 #include "my_signal.h"
 
-extern host_info *host_list;
 extern char *outfile;
 extern int debug;
 extern int so_rcvbuf;

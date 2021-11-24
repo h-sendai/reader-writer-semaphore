@@ -1,7 +1,6 @@
 #include "reader-writer-semaphore.h"
 
 char *outfile = NULL;
-host_info *host_list = NULL;
 int debug = 0;
 shared_struct shared;
 int so_rcvbuf = 0;

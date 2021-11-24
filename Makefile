@@ -5,7 +5,6 @@ LDFLAGS += -pthread
 all: $(PROG)
 OBJS += reader-writer-semaphore.o
 OBJS += readn.o
-OBJS += host_info.o
 OBJS += reader.o
 OBJS += writer.o
 OBJS += my_socket.o
