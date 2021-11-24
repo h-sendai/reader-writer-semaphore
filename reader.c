@@ -4,8 +4,18 @@
 
 #include "reader-writer-semaphore.h"
 #include "my_socket.h"
+#include "set_timer.h"
+#include "log-et.h"
 
 unsigned long long n_loop_reader = 0;
+
+volatile sig_atomic_t has_alarm = 0;
+
+void sig_alarm(int signo)
+{
+    has_alarm = 1;
+    return;
+}
 
 void * reader(void *arg)
 {
@@ -42,12 +52,21 @@ void * reader(void *arg)
         exit(1);
     }
 
+    my_signal(SIGALRM, sig_alarm);
+    set_timer(1, 0, 1, 0);
+
+    set_start_tv();
     if (gettimeofday(&start_time, NULL) < 0) {
         err(1, "gettimeofday on reader");
     }
 
-    /* XXX: one host for now */
+    int interval_read_bytes = 0;
     for (i = 0; ; ) {
+        if (has_alarm) {
+            has_alarm = 0;
+            log_et(stderr, "%d bytes %.3f Mb\n", interval_read_bytes, interval_read_bytes*8/1000000.0);
+            interval_read_bytes = 0;
+        }
         if (has_interrupt) {
             shared.buff[i].n = 0;
             if (sem_post(&shared.n_stored) != 0) {
@@ -83,6 +102,9 @@ void * reader(void *arg)
             }
             exit(0);
         }
+
+        interval_read_bytes += shared.buff[i].n;
+
         if (++i >= NBUFF) {
             i = 0; /* circular buffer */
         }
@@ -90,7 +112,7 @@ void * reader(void *arg)
             err(1, "sem_post on reader for shared.n_stored");
         }
 
-            // debug 
+        // debug 
         n_loop_reader ++;
         if (debug > 1) {
             long long diff = n_loop_reader - n_loop_writer;

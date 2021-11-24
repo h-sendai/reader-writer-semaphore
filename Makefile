@@ -10,6 +10,8 @@ OBJS += writer.o
 OBJS += my_socket.o
 OBJS += get_num.o
 OBJS += my_signal.o
+OBJS += set_timer.o
+OBJS += log-et.o
 
 reader-writer-semaphore.o: reader-writer-semaphore.h reader-writer-semaphore.c
 reader.o: reader-writer-semaphore.h reader.c
