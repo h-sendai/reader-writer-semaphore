@@ -3,5 +3,5 @@ syntax: glob
 *.o
 *.d
 *~
-multibuf
+reader-writer-semaphore
 data

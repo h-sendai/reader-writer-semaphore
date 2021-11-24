@@ -2,7 +2,7 @@
 *.o
 *.d
 *~
-multibuf
+reader-writer-semaphore
 #
 # to create empty directory and add it to repository:
 # mkdir log

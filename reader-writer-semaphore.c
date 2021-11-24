@@ -1,4 +1,4 @@
-#include "multibuf.h"
+#include "reader-writer-semaphore.h"
 
 char *outfile = NULL;
 host_info *host_list = NULL;
