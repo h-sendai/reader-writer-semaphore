@@ -10,7 +10,7 @@ int n_servers = 0;
 int usage(void)
 {
     char *message = 
-"Usage: mutibuf [-d] [-o outfile] [-r so_rcvbuf] ip_address:port [ip_address:port ...]\n"
+"Usage: reader-writer-semaphore [-d] [-o outfile] [-r so_rcvbuf] ip_address:port\n"
 "Options:\n"
 "    -d debug (many times)\n"
 "    -o outfile\n"
@@ -27,10 +27,8 @@ void sig_int(int signo)
 
 int main(int argc, char *argv[])
 {
-    int i, ch;
+    int ch;
     pthread_t tid_reader, tid_writer;
-    struct timeval start;
-    host_info *p;
     
     has_interrupt = 0;
     my_signal(SIGINT, sig_int);
@@ -55,29 +53,13 @@ int main(int argc, char *argv[])
     }
     argc -= optind;
     argv += optind;
-    if (argc == 0) {
+    if (argc != 1) {
         usage();
         exit(1);
     }
-
-    for (i = 0; i < argc; i++) {
-        host_list = addend(host_list, new_host(argv[i]));
-        n_servers ++;
-    }
-    if (debug) {
-        fprintf(stderr, "# n_servers: %d\n", n_servers);
-        for (p = host_list; p != NULL; p = p->next) {
-            fprintf(stderr,"# %s\n", p->ip_address);
-        }
-        fprintf(stderr, "# number of buffers: %d\n", NBUFF);
-        fprintf(stderr, "# buffer size: %d\n", BUFFSIZE);
-    }
-
-    if (gettimeofday(&start, NULL) < 0) {
-        err(1, "gettimeofday for start");
-    }
-    fprintf(stderr, "%ld.%06ld start\n", start.tv_sec, start.tv_usec);
     
+    char *remote_host_info = argv[0];
+
     if (sem_init(&shared.n_empty,  0, NBUFF) != 0) {
         err(1, "sem_init for shared.n_empty");
     }
@@ -88,7 +70,7 @@ int main(int argc, char *argv[])
         err(1, "sem_init for file_preparation");
     }
 
-    if (pthread_create(&tid_reader, NULL, reader, NULL) != 0) {
+    if (pthread_create(&tid_reader, NULL, reader, remote_host_info) != 0) {
         err(1, "pthread_create on reader");
     }
     if (pthread_create(&tid_writer, NULL, writer, NULL) != 0) {
