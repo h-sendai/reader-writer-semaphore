@@ -23,7 +23,7 @@ extern int n_servers;
 extern void *reader(void *);
 extern void *writer(void *);
 
-#define NBUFF 4096
+#define NBUFF 4
 /* #define NBUFF 256 */
 #define BUFFSIZE 32*1024
 
